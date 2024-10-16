@@ -4,34 +4,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+@st.cache_data
+def load_data():
+    df_db_operacoes = pd.read_csv('db_credito.operacoes_1_(1).csv', sep=';')
+    df_db_faixa_risco = pd.read_csv('db_credito.faixas_risco_1_(1).csv', sep=';', encoding='latin1')
+    df_dados_case = pd.read_excel('dados_case_analista_dados_1_(1).xlsx', sheet_name='DADOS')
+    aposentados = df_dados_case[df_dados_case['DESC_CBO'] == 'Aposentados e beneficiários do inss']
+    return df_db_operacoes, df_db_faixa_risco, df_dados_case, aposentados
 
-# ler e cria dataframe dos arquivos csv
-df_db_operacoes = pd.read_csv('db_credito.operacoes_1_(1).csv', sep=';')
-df_db_faixa_risco = pd.read_csv('db_credito.faixas_risco_1_(1).csv', sep=';', encoding='latin1')
-# ler arquivo xlsx
-df_dados_case = pd.read_excel('dados_case_analista_dados_1_(1).xlsx', sheet_name='DADOS')
+df_db_operacoes, df_db_faixa_risco, df_dados_case, aposentados = load_data()
 
+@st.cache_data
+def get_distribuicao_renda(aposentados):
+    distribuicao_renda = aposentados['RENDA_CAT'].value_counts(normalize=True).reset_index()
+    distribuicao_renda.columns = ['RENDA_CAT', 'Proporção']
+    distribuicao_renda['Proporção_formatada'] = distribuicao_renda['Proporção'].apply(lambda x: f"{x:.2%}")
+    return distribuicao_renda
 
-# Filtrar aposentados e beneficiários do INSS
-aposentados = df_dados_case[df_dados_case['DESC_CBO'] == 'Aposentados e beneficiários do inss']
-
-# Distribuição de renda dos aposentados
-distribuicao_renda = aposentados['RENDA_CAT'].value_counts(normalize=True).reset_index()
-distribuicao_renda.columns = ['RENDA_CAT', 'Proporção']
-
-# Criar uma coluna formatada para exibição
-distribuicao_renda['Proporção_formatada'] = distribuicao_renda['Proporção'].apply(lambda x: f"{x:.2%}")
-
-print("Distribuição de renda dos aposentados:")
-print(distribuicao_renda[['RENDA_CAT', 'Proporção_formatada']].to_string(index=False))
-print("\n")
+distribuicao_renda = get_distribuicao_renda(aposentados)
 
 def limpar_e_converter(serie):
     if pd.api.types.is_numeric_dtype(serie):
         return serie
     return pd.to_numeric(serie.replace({'S': 1, 'N': 0, 'SN': np.nan}), errors='coerce')
 
-def analise_completa_sicredi(renda_cat):
+@st.cache_data
+def analise_completa_sicredi(renda_cat, aposentados):
     aposentados_filtrados = aposentados[aposentados['RENDA_CAT'] == renda_cat]
     
     produtos_servicos = [
@@ -47,30 +45,21 @@ def analise_completa_sicredi(renda_cat):
 st.title('Análise Sicredi - Case Luiza')
 st.markdown("## *1º Tópico*")
 
-# Seletor de categoria de renda
 categorias_renda = aposentados['RENDA_CAT'].unique()
 renda_selecionada = st.selectbox('Selecione a categoria de renda:', categorias_renda)
 
-# Executar análise
-resultados = analise_completa_sicredi(renda_selecionada)
+resultados = analise_completa_sicredi(renda_selecionada, aposentados)
 
-# Exibir resultados
 st.write(f"Análise para categoria de renda: {renda_selecionada}")
-# Exibir a tabela
 st.subheader('Taxa de Utilização de Produtos e Serviços')
 df_display = resultados.reset_index().rename(columns={'index': 'Produto/Serviço', 0: 'Taxa de Utilização'})
 df_display['Taxa de Utilização'] = df_display['Taxa de Utilização'].apply(lambda x: f'{x:.2%}')
 st.dataframe(df_display, use_container_width=True)
 
-# Criar e exibir o gráfico
 fig, ax = plt.subplots(figsize=(12, 8))
-
-# Usando uma paleta de cores mais atraente
 colors = sns.color_palette("viridis", n_colors=len(resultados))
-
 bars = sns.barplot(x=resultados.index, y=resultados.values, ax=ax, palette=colors)
 
-# Adicionando rótulos nas barras
 for i, v in enumerate(resultados.values):
     ax.text(i, v, f'{v:.1%}', ha='center', va='bottom')
 
@@ -79,23 +68,17 @@ plt.xlabel('Produtos e Serviços', fontsize=12)
 plt.ylabel('Taxa de Utilização', fontsize=12)
 plt.xticks(rotation=45, ha='right', fontsize=10)
 plt.yticks(fontsize=10)
-
-# Adicionando uma grade para melhor leitura
 ax.grid(axis='y', linestyle='--', alpha=0.7)
-
-# Ajustando o layout
 plt.tight_layout()
 
 st.pyplot(fig)
 
-# Adicionando uma explicação dos dados
 st.info("""
 **Explicação dos Dados:**
 - **Taxa de Utilização**: Representa a proporção de clientes que utilizam cada produto ou serviço.
 - **Produtos/Serviços**: Inclui diversos produtos financeiros e serviços digitais oferecidos pelo Sicredi.
 - Os dados são específicos para a categoria de renda selecionada e focam em clientes aposentados.
 """)
-
 
 st.subheader('Top 5 Regiões com Maior Número de Associados')
 
