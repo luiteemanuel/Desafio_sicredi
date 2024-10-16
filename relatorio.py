@@ -163,7 +163,6 @@ st.write('''
 - **Seguros**: A família pode ser incentivada a considerar a importância de proteção contra riscos como desemprego, doenças graves e outros imprevistos.
 - **Investimentos**: Com a renda mais estável, a família pode explorar oportunidades de investimento, como poupança, fundos de investimento e previdência.
 - **Credito consignado**: Avaliar a possibilidade de oferecer produtos de crédito consignado"
-- 
 ''')
 
 st.markdown("## *2º Tópico*")
