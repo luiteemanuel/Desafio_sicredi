@@ -155,25 +155,15 @@ st.info("""
 Estes indicadores ajudam a entender o nível de engajamento financeiro e digital dos clientes em diferentes categorias de renda.
 """)
 
-# Adicionar recomendações
-st.subheader('Recomendação do Sicredi para o cliente')
-if resultados['DIGITAL_TRANSACIONOU_30D'] < 0.5:
-    st.write("- Oferecer suporte para aumentar o engajamento digital")
-if resultados[['PROD_POUPANCA', 'PROD_FUNDOS', 'PROD_PREVIDENCIA']].sum() < 1:
-    st.write("- Promover educação financeira focada em diversificação de investimentos")
-if resultados['PROD_SEGURO_RESIDENCIAL'] < 0.2:
-    st.write("- Apresentar os benefícios do seguro residencial")
-st.write("- Avaliar a possibilidade de oferecer produtos de crédito consignado")
-st.write("- Fornecer orientação sobre gestão de riscos financeiros")
 
-
-st.subheader('Com base nos dados analisados, pode oferecer suporte personalizado para Luiza e sua família. Podemos abordar isso em três aspectos principais:')
+st.subheader('Com base nos dados analisados, pode oferecer produtos e suporte personalizado para Luiza e sua família. Podemos abordar isso em três aspectos principais:')
 
 st.write('''
 - **Educação Financeira**: Luiza e seus familiares podem receber orientações sobre como gerenciar melhor seus rendimentos e despesas.
 - **Seguros**: A família pode ser incentivada a considerar a importância de proteção contra riscos como desemprego, doenças graves e outros imprevistos.
 - **Investimentos**: Com a renda mais estável, a família pode explorar oportunidades de investimento, como poupança, fundos de investimento e previdência.
-
+- **Credito consignado**: Avaliar a possibilidade de oferecer produtos de crédito consignado"
+- 
 ''')
 
 st.markdown("## *2º Tópico*")
