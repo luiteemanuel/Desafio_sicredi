@@ -82,8 +82,6 @@ st.info("""
 
 st.subheader('Top 5 Regiões com Maior Número de Associados')
 
-# Assumindo que você já tem esse DataFrame calculado em algum lugar do seu código
-# Se não, você precisará calcular aqui
 crescimento_regional = aposentados.groupby('DES_CENTRAL').agg({
     'CODIGO_ASSOC': 'count',
     'SALDO_CRÉDITO_PESSOAL': 'mean'
@@ -201,6 +199,7 @@ st.dataframe(utilizacao_credito)
 
 st.write("Esta análise mostra o uso médio de diferentes tipos de crédito por faixa de renda, indicando oportunidades para oferta de crédito sustentável.")
 
+st.write("A Média de Produtos Utilizados é uma medida que indica quantos dos produtos listados um cliente típico de cada categoria de renda utiliza.")
 
 st.subheader("Análise Regional")
 
@@ -230,12 +229,9 @@ Com base nas análises realizadas, podemos concluir que o Sicredi pode se benefi
 2. Oportunidades de Crédito:
    - Os dados de utilização de crédito por faixa de renda indicam oportunidades para oferecer produtos de crédito personalizados e sustentáveis.
    - Isso pode incluir opções como crédito pessoal, financiamentos ou microcrédito adaptados às necessidades de Luiza.
+   - Vale ressaltar que necessário uma análise mais aprofundada do seu perfil para entender melhor suas necessidades.
 
-3. Engajamento Digital:
-   - A análise de engajamento digital revela o potencial para aumentar a adoção de serviços online entre clientes como Luiza.
-   - Isso pode levar a uma maior eficiência operacional e satisfação do cliente.
-
-4. Representatividade Regional:
+3. Representatividade Regional:
    - A análise regional mostra como novos sócios como Luiza podem contribuir para fortalecer a presença do Sicredi em diferentes áreas.
    - Isso pode resultar em um crescimento orgânico da base de clientes na região de Luiza.
 
